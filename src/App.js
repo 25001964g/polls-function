@@ -3,7 +3,6 @@ import Poll from './components/Poll';
 import PollCreator from './components/PollCreator';
 import PollResults from './components/PollResults';
 import JoinPoll from './components/JoinPoll';
-import { generatePollCode } from './utils/pollUtils';
 import './App.css';
 
 const App = () => {
@@ -19,10 +18,7 @@ const App = () => {
     
     if (savedPolls) {
       setPolls(JSON.parse(savedPolls));
-    } else {
-      // Initialize with sample polls
-      initializeSamplePolls();
-    }
+    } 
     
     if (savedVotes) {
       setUserVotes(JSON.parse(savedVotes));
@@ -37,53 +33,6 @@ const App = () => {
   useEffect(() => {
     localStorage.setItem('userVotes', JSON.stringify(userVotes));
   }, [userVotes]);
-
-  const initializeSamplePolls = () => {
-    const samplePolls = [
-      {
-        id: '1',
-        code: 'ABC123',
-        question: 'What is your favorite programming language?',
-        type: 'Multiple Choice',
-        options: [
-          { id: 0, text: 'JavaScript', votes: 15 },
-          { id: 1, text: 'Python', votes: 12 },
-          { id: 2, text: 'Java', votes: 8 },
-          { id: 3, text: 'TypeScript', votes: 10 }
-        ],
-        createdAt: new Date().toISOString(),
-        isActive: true
-      },
-      {
-        id: '2',
-        code: 'DEF456',
-        question: 'How satisfied are you with remote working?',
-        type: 'Rating Scale',
-        options: [
-          { id: 0, text: 'Very Satisfied', votes: 18 },
-          { id: 1, text: 'Satisfied', votes: 14 },
-          { id: 2, text: 'Neutral', votes: 5 },
-          { id: 3, text: 'Dissatisfied', votes: 2 },
-          { id: 4, text: 'Very Dissatisfied', votes: 1 }
-        ],
-        createdAt: new Date().toISOString(),
-        isActive: true
-      },
-      {
-        id: '3',
-        code: 'GHI789',
-        question: 'Should we implement dark mode for our application?',
-        type: 'Yes/No Question',
-        options: [
-          { id: 0, text: 'Yes, definitely!', votes: 25 },
-          { id: 1, text: 'No, not necessary', votes: 7 }
-        ],
-        createdAt: new Date().toISOString(),
-        isActive: true
-      }
-    ];
-    setPolls(samplePolls);
-  };
 
   const handleCreatePoll = async (newPoll) => {
     setPolls(prevPolls => [...prevPolls, newPoll]);
@@ -204,7 +153,6 @@ const App = () => {
             {polls.length === 0 ? (
               <div className="no-polls-message">
                 <h3>No polls available</h3>
-                <p>Create your first poll to get started!</p>
               </div>
             ) : (
               <div className="polls-grid">

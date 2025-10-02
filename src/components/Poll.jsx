@@ -43,38 +43,85 @@ const Poll = ({ poll, onVote, hasVoted, userVote }) => {
       </div>
 
       <div className="poll-options">
-        {poll.options.map((option) => (
-          <div
-            key={option.id}
-            className={`poll-option ${
-              selectedOption === option.id ? 'selected' : ''
-            } ${hasVoted ? 'voted' : ''}`}
-            onClick={() => handleOptionSelect(option.id)}
-          >
-            <div className="option-content">
-              <div className="option-text">{option.text}</div>
-              {hasVoted && (
-                <div className="option-stats">
-                  <span className="vote-percentage">
-                    {getPercentage(option.votes)}%
-                  </span>
-                  <span className="vote-count">({option.votes} votes)</span>
+        {poll.type === 'Rating Scale' ? (
+          <div className="rating-poll">
+            {poll.ratingScale?.labels && (
+              <div className="rating-labels">
+                <span className="rating-label-min">
+                  {poll.ratingScale.labels.min}
+                </span>
+                <span className="rating-label-max">
+                  {poll.ratingScale.labels.max}
+                </span>
+              </div>
+            )}
+            <div className="rating-options">
+              {poll.options.map((option) => (
+                <div
+                  key={option.id}
+                  className={`rating-option ${
+                    selectedOption === option.id ? 'selected' : ''
+                  } ${hasVoted ? 'voted' : ''}`}
+                  onClick={() => handleOptionSelect(option.id)}
+                >
+                  <div className="rating-number">{option.text}</div>
+                  {hasVoted && (
+                    <div className="rating-stats">
+                      <div 
+                        className="rating-bar"
+                        style={{ height: `${getPercentage(option.votes)}%` }}
+                      />
+                      <span className="rating-percentage">
+                        {getPercentage(option.votes)}%
+                      </span>
+                    </div>
+                  )}
                 </div>
+              ))}
+            </div>
+          </div>
+        ) : (
+          poll.options.map((option) => (
+            <div
+              key={option.id}
+              className={`poll-option ${
+                selectedOption === option.id ? 'selected' : ''
+              } ${hasVoted ? 'voted' : ''} ${
+                poll.type === 'Yes/No Question' ? 
+                  (option.text === 'Yes' ? 'yes-option' : 'no-option') : ''
+              }`}
+              onClick={() => handleOptionSelect(option.id)}
+            >
+              <div className="option-content">
+                <div className="option-text">
+                  {poll.type === 'Yes/No Question' ? 
+                    (option.text === 'Yes' ? '✓ Yes' : '✗ No') : 
+                    option.text
+                  }
+                </div>
+                {hasVoted && (
+                  <div className="option-stats">
+                    <span className="vote-percentage">
+                      {getPercentage(option.votes)}%
+                    </span>
+                    <span className="vote-count">({option.votes} votes)</span>
+                  </div>
+                )}
+              </div>
+              
+              {hasVoted && (
+                <div 
+                  className="vote-bar"
+                  style={{ width: `${getPercentage(option.votes)}%` }}
+                />
+              )}
+              
+              {selectedOption === option.id && !hasVoted && (
+                <div className="selection-indicator">✓</div>
               )}
             </div>
-            
-            {hasVoted && (
-              <div 
-                className="vote-bar"
-                style={{ width: `${getPercentage(option.votes)}%` }}
-              />
-            )}
-            
-            {selectedOption === option.id && !hasVoted && (
-              <div className="selection-indicator">✓</div>
-            )}
-          </div>
-        ))}
+          ))
+        )}
       </div>
 
       {!hasVoted && (
